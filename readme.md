@@ -53,11 +53,11 @@ This improves trust and transparency compared to rule-only systems.
 
 ## Demo Images
 
-### Dashboard View
-![Agri Guardian Dashboard](demo/dashboard.png)
+### sensor view
+![Agri Guardian Dashboard](demo.png)
 
-### AI Verdict Output
-![AI Verdict Output](demo/ai-verdict.png)
+### Dashbord
+![AI Verdict Output](demo1.png)
 
 ---
 
