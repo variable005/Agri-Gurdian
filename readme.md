@@ -20,57 +20,62 @@ Rather than acting as a black box, the system makes its reasoning visible.
 
 ## Tools & Technologies Used
 
-**Hardware (Prototype / Simulated)**
-- ESP32
-- DHT22 – Temperature & Humidity
-- DS18B20 – Soil Temperature
-- LDR – Light Intensity
-- OLED Display
-- MQ-series Gas Sensor (environment safety indicator)
+### Hardware (Prototype / Simulated)
+- ESP32  
+- DHT22 – Temperature & Humidity  
+- DS18B20 – Soil Temperature  
+- LDR – Light Intensity  
+- OLED Display  
+- MQ-series Gas Sensor (environment safety indicator)  
 
-**Software & AI**
-- HTML, CSS, JavaScript (Dashboard)
-- Local GenAI using LM Studio
-- OpenAI-compatible API workflow (Gemma-compatible)
-- Python (local proxy for browser ↔ AI communication)
+### Software & AI
+- **Gemma 3** (local LLM)
+- **LM Studio** (local inference server)
+- **Python FastAPI** (local AI backend / API layer)
+- HTML, CSS, JavaScript (Web Dashboard)
+- OpenAI-compatible API workflow
 - Wokwi (used during simulation and testing)
 
 ---
 
 ## How AI Is Used
 
-AI is used for **contextual reasoning**, not simple threshold checks.
+Agri Guardian uses **Gemma 3 running locally via LM Studio** as its reasoning engine.
 
-The GenAI model:
+AI is not used for simple threshold-based logic. Instead, the model:
+
 - Interprets multiple environmental signals together  
 - Weighs conflicting conditions  
-- Explains decisions in human-readable language  
+- Generates explainable decisions in natural language  
 - Outputs confidence levels to reflect uncertainty  
 
-This improves trust and transparency compared to rule-only systems.
+FastAPI acts as a lightweight bridge between the web dashboard and the local GenAI engine.
+
+This design allows the system to work **offline-first**, while remaining compatible with cloud-based GenAI services.
 
 ---
 
 ## Demo Images
 
-### sensor view
-![Agri Guardian Dashboard](demo.png)
+### Sensor View
+![Sensor View](demo.png)
 
-### Dashbord
-![AI Verdict Output](demo1.png)
+### Dashboard & AI Verdict
+![Dashboard View](demo1.png)
 
 ---
 
 ## System Flow
 
 1. Environmental data is collected (real or simulated)
-2. Data is structured and passed to the AI reasoning layer
-3. GenAI generates:
+2. Data is structured and sent to the FastAPI backend
+3. FastAPI forwards the data to the local Gemma 3 model via LM Studio
+4. GenAI generates:
    - Decision
    - Confidence score
    - Reasoning
    - Do’s and Don’ts
-4. Output is displayed on a web-based dashboard
+5. Output is rendered on the web-based dashboard
 
 ---
 
@@ -82,21 +87,25 @@ Built for the **GenAI Hackathon Hajipur** under the **AgriTech** theme, aligned 
 
 ## Current Status
 
-- Core system working
-- Local GenAI integration complete
-- Dashboard UI functional
-- Cloud-ready architecture (Gemini-compatible)
+- Core system functional  
+- Local GenAI (Gemma 3) integration complete  
+- FastAPI backend operational  
+- Web dashboard working  
+- Cloud-compatible architecture (Gemini-ready)
 
 ---
 
 ## Future Scope
 
-- Live sensor streaming from hardware
-- Crop-specific growth-stage models
-- Multilingual advisory output
-- Mobile-first deployment
-- Cloud scaling using Gemini API
+- Deployment on **NVIDIA Jetson Nano** for edge inference
+- Fully live sensor data streaming
+- Crop- and growth-stage–specific advisory models
+- Multilingual AI responses for regional accessibility
+- Mobile-first dashboard
+- Cloud scaling using Gemini / Google Cloud APIs
 
 ---
 
-This project is a hackathon prototype focused on clear reasoning, stability, and explainability over feature count or visual complexity.
+This project is a hackathon prototype focused on **clarity, explainability, and reliability**, prioritizing real-world constraints over feature overload.
+
+##Developed by Hariom Sharnam
