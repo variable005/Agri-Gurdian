@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AGRI-GUARDIAN COMMAND | Hariom Sharnam</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --md-sys-color-primary: #006d3a;
+            --md-sys-color-on-primary: #ffffff;
+            --md-sys-color-primary-container: #98f7b5;
+            --md-sys-color-surface: #f7fbf2;
+            --md-sys-color-on-surface: #191c19;
+            --md-sys-color-surface-variant: #dfe5d8;
+            --md-sys-color-on-surface-variant: #43493f;
+            --md-sys-color-outline: #73796e;
+            --md-sys-color-secondary-container: #dce5d5;
+            --card-bg: #ffffff;
+            --transition-speed: 0.3s;
+        }
+
+        [data-theme="dark"] {
+            --md-sys-color-primary: #7cda9b;
+            --md-sys-color-on-primary: #00391b;
+            --md-sys-color-primary-container: #005229;
+            --md-sys-color-surface: #111411;
+            --md-sys-color-on-surface: #e1e3dc;
+            --md-sys-color-surface-variant: #43493f;
+            --md-sys-color-on-surface-variant: #c3c8bc;
+            --md-sys-color-outline: #8d9387;
+            --md-sys-color-secondary-container: #334b39;
+            --card-bg: #1c201c;
+        }
+
+        body {
+            background-color: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-surface);
+            border: none;
+            padding: 12px;
+            border-radius: 16px;
+            cursor: pointer;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .header { text-align: center; margin-bottom: 32px; }
+        .header h1 { font-size: 2rem; color: var(--md-sys-color-primary); margin: 0; text-transform: uppercase; }
+        .header .timestamp { font-family: 'Roboto Mono', monospace; color: var(--md-sys-color-outline); font-size: 0.9rem; margin-top: 8px; }
+
+        .main-container { width: 100%; max-width: 1200px; display: flex; flex-direction: column; gap: 20px; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+        }
+
+        .stat-card {
+            background: var(--md-sys-color-secondary-container);
+            padding: 20px;
+            border-radius: 24px;
+            transition: background-color var(--transition-speed);
+        }
+
+        .stat-card .label { font-size: 0.75rem; font-weight: 700; color: var(--md-sys-color-on-surface-variant); text-transform: uppercase; }
+        .stat-card .value { font-size: 1.6rem; font-weight: 700; color: var(--md-sys-color-primary); margin-top: 4px; }
+
+        .charts-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 16px;
+        }
+
+        .chart-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 16px;
+            border: 1px solid var(--md-sys-color-surface-variant);
+            transition: background-color var(--transition-speed);
+        }
+
+        .chart-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--md-sys-color-outline);
+            text-transform: uppercase;
+        }
+
+        .control-panel { background: var(--md-sys-color-surface-variant); padding: 24px; border-radius: 28px; }
+        textarea { width: 100%; height: 60px; background: var(--card-bg); color: var(--md-sys-color-on-surface); border: 1px solid var(--md-sys-color-outline); border-radius: 12px; padding: 12px; box-sizing: border-box; font-family: 'Roboto Mono', monospace; }
+
+        button.sync-btn {
+            background-color: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            border: none;
+            padding: 14px 24px;
+            border-radius: 100px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+
+        .ai-response { background: var(--card-bg); padding: 20px; margin-top: 16px; border-radius: 16px; border: 1px solid var(--md-sys-color-primary-container); line-height: 1.6; }
+
+        footer { margin-top: 48px; font-size: 0.85rem; color: var(--md-sys-color-outline); text-align: center; }
+    </style>
+</head>
+<body data-theme="light">
+
+<button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">🌙 Dark Mode</button>
+
+<div class="header">
+    <h1>AGRI-GUARDIAN COMMAND</h1>
+    <div class="timestamp" id="rtc-display">RTC: INITIALIZING...</div>
+</div>
+
+<div class="main-container">
+    <div class="grid">
+        <div class="stat-card">
+            <div class="label">Air Temp</div>
+            <div id="val-at" class="value">--°C</div>
+        </div>
+        <div class="stat-card">
+            <div class="label">Humidity</div>
+            <div id="val-h" class="value">--%</div>
+        </div>
+        <div class="stat-card">
+            <div class="label">Soil Temp</div>
+            <div id="val-st" class="value">--°C</div>
+        </div>
+        <div class="stat-card">
+            <div class="label">Light</div>
+            <div id="val-l" class="value">--lx</div>
+        </div>
+        <div class="stat-card">
+            <div class="label">Gas</div>
+            <div id="val-g" class="value">--</div>
+        </div>
+    </div>
+
+    <div class="charts-section">
+        <div class="chart-card"><div class="chart-title">Air Temperature Trend</div><canvas id="chart-at"></canvas></div>
+        <div class="chart-card"><div class="chart-title">Humidity Trend</div><canvas id="chart-h"></canvas></div>
+        <div class="chart-card"><div class="chart-title">Soil Temperature Trend</div><canvas id="chart-st"></canvas></div>
+        <div class="chart-card"><div class="chart-title">Light Intensity Trend</div><canvas id="chart-l"></canvas></div>
+        <div class="chart-card"><div class="chart-title">Gas Concentration Trend</div><canvas id="chart-g"></canvas></div>
+    </div>
+
+    <div class="control-panel">
+        <div style="font-weight: 500; margin-bottom: 8px;">Sensor Data Ingest (JSON)</div>
+        <textarea id="jsonInput">{"ts":"2025-12-29T15:32:34","at":24.0,"h":40.0,"st":0.0,"l":2001,"g":7257}</textarea>
+        <button class="sync-btn" onclick="runSystemUpdate()">Sync and Analyze</button>
+        <div id="aiOutput" class="ai-response">Waiting for synchronization...</div>
+    </div>
+</div>
+
+<footer>Project Developed by Hariom Sharnam | 2025</footer>
+
+<script>
+    const charts = {};
+    const sensorKeys = ['at', 'h', 'st', 'l', 'g'];
+    const sensorColors = { at: '#006d3a', h: '#005fb0', st: '#6d5e00', l: '#b05f00', g: '#bc5000' };
+
+    // Initialize all 5 charts
+    sensorKeys.forEach(key => {
+        const ctx = document.getElementById(`chart-${key}`).getContext('2d');
+        charts[key] = new Chart(ctx, {
+            type: 'line',
+            data: { labels: [], datasets: [{ label: key.toUpperCase(), borderColor: sensorColors[key], data: [], tension: 0.3, pointRadius: 2 }] },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: '#73796e', font: { size: 10 } } },
+                    y: { grid: { color: 'rgba(115, 121, 110, 0.1)' }, ticks: { color: '#73796e', font: { size: 10 } } }
+                }
+            }
+        });
+    });
+
+    function toggleTheme() {
+        const body = document.body;
+        const btn = document.getElementById('theme-btn');
+        const isDark = body.getAttribute('data-theme') === 'dark';
+        const newTheme = isDark ? 'light' : 'dark';
+
+        body.setAttribute('data-theme', newTheme);
+        btn.innerText = newTheme === 'light' ? '🌙 Dark Mode' : '☀️ Light Mode';
+        localStorage.setItem('theme', newTheme);
+        updateChartColors(newTheme);
+    }
+
+    function updateChartColors(theme) {
+        const textColor = theme === 'dark' ? '#e1e3dc' : '#43493f';
+        Object.values(charts).forEach(chart => {
+            chart.options.scales.x.ticks.color = textColor;
+            chart.options.scales.y.ticks.color = textColor;
+            chart.update();
+        });
+    }
+
+    async function runSystemUpdate() {
+        try {
+            const raw = document.getElementById("jsonInput").value;
+            const data = JSON.parse(raw);
+            const timeLabel = data.ts ? new Date(data.ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : new Date().toLocaleTimeString();
+
+            sensorKeys.forEach(key => {
+                // Update text values
+                const valEl = document.getElementById(`val-${key}`);
+                if(valEl) valEl.innerText = data[key] + (key === 'l' ? 'lx' : (key === 'g' ? '' : '°C'));
+                if(key === 'h') valEl.innerText = data[key] + '%';
+
+                // Update Chart data
+                const chart = charts[key];
+                chart.data.labels.push(timeLabel);
+                chart.data.datasets[0].data.push(data[key]);
+                if(chart.data.labels.length > 15) {
+                    chart.data.labels.shift();
+                    chart.data.datasets[0].data.shift();
+                }
+                chart.update();
+            });
+
+            // AI Proxy
+            const aiOutput = document.getElementById("aiOutput");
+            aiOutput.innerText = "Analyzing agricultural trends...";
+            const res = await fetch("http://127.0.0.1:8000/proxy-ai", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    model: "gemma-3",
+                    messages: [{ role: "user", content: `Bihar Farm Data: AirTemp:${data.at}, Humid:${data.h}, SoilTemp:${data.st}, Light:${data.l}, Gas:${data.g}. Provide a 2-sentence actionable insight.` }]
+                })
+            });
+            const result = await res.json();
+            aiOutput.innerText = result.choices[0].message.content;
+
+        } catch (e) { document.getElementById("aiOutput").innerText = "Sync Error: Check JSON format."; }
+    }
+
+    function updateClock() { document.getElementById('rtc-display').innerText = `RTC: ${new Date().toLocaleString().toUpperCase()}`; }
+    setInterval(updateClock, 1000);
+    window.onload = () => { if(localStorage.getItem('theme') === 'dark') toggleTheme(); };
+</script>
+</body>
+</html>
