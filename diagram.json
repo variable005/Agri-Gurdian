@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "author": "Anonymous maker",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-breadboard-mini", "id": "bb1", "top": 37, "left": 16.8, "attrs": {} },
+    {
+      "type": "board-esp32-s2-devkitm-1",
+      "id": "esp",
+      "top": -13.91,
+      "left": 206.17,
+      "attrs": {}
+    },
+    {
+      "type": "board-ssd1306",
+      "id": "oled1",
+      "top": 223.94,
+      "left": 29.03,
+      "attrs": { "i2cAddress": "0x3c" }
+    },
+    { "type": "wokwi-gas-sensor", "id": "gas1", "top": -74.1, "left": -69.8, "attrs": {} },
+    { "type": "wokwi-dht22", "id": "dht1", "top": 48.3, "left": -91.8, "attrs": {} },
+    { "type": "board-ds18b20", "id": "temp1", "top": -1.13, "left": -34.32, "attrs": {} },
+    { "type": "wokwi-ds1307", "id": "rtc1", "top": -72.6, "left": 96.1, "attrs": {} },
+    {
+      "type": "wokwi-photoresistor-sensor",
+      "id": "ldr1",
+      "top": 204.8,
+      "left": -172,
+      "attrs": {}
+    }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "esp:5V", "bb1:17b.j", "red", [ "h0" ] ],
+    [ "esp:GND.1", "bb1:1b.j", "black", [ "h0" ] ],
+    [ "bb1:17b.f", "bb1:16b.f", "green", [ "v0" ] ],
+    [ "bb1:1b.f", "bb1:2b.f", "green", [ "v0" ] ],
+    [ "esp:8", "bb1:17t.e", "magenta", [ "h0" ] ],
+    [ "esp:9", "bb1:16t.e", "purple", [ "h0" ] ],
+    [ "dht1:GND", "bb1:1b.i", "black", [ "v0" ] ],
+    [ "temp1:GND", "bb1:1b.h", "black", [ "v0" ] ],
+    [ "gas1:GND", "bb1:1b.g", "black", [ "h0" ] ],
+    [ "rtc1:GND", "bb1:2b.g", "black", [ "h0" ] ],
+    [ "oled1:GND", "bb1:2b.h", "black", [ "v0" ] ],
+    [ "bb1:16b.g", "bb1:13b.f", "green", [ "v0" ] ],
+    [ "rtc1:5V", "bb1:13b.g", "red", [ "h0" ] ],
+    [ "gas1:VCC", "bb1:13b.h", "red", [ "h0" ] ],
+    [ "dht1:VCC", "bb1:13b.i", "red", [ "v0" ] ],
+    [ "oled1:VCC", "bb1:13b.j", "red", [ "v0" ] ],
+    [ "temp1:VCC", "bb1:17b.i", "red", [ "v0" ] ],
+    [ "esp:4", "dht1:SDA", "magenta", [ "h0" ] ],
+    [ "rtc1:SDA", "bb1:17t.d", "magenta", [ "h0" ] ],
+    [ "oled1:SDA", "bb1:17t.c", "magenta", [ "v0" ] ],
+    [ "oled1:SCL", "bb1:16t.d", "purple", [ "v0" ] ],
+    [ "rtc1:SCL", "bb1:16t.c", "purple", [ "h0" ] ],
+    [ "esp:1", "gas1:AOUT", "green", [ "h0" ] ],
+    [ "temp1:DQ", "esp:5", "green", [ "v0" ] ],
+    [ "ldr1:VCC", "bb1:17b.h", "red", [ "h0" ] ],
+    [ "ldr1:GND", "bb1:1b.i", "black", [ "h0" ] ],
+    [ "esp:2", "ldr1:AO", "green", [ "h0" ] ]
+  ],
+  "dependencies": {}
+}
