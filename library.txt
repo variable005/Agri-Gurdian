@@ -1,0 +1,7 @@
+Adafruit GFX Library
+DHT sensor library
+RTClib
+
+Adafruit SSD1306
+OneWire
+DallasTemperature
